@@ -1,6 +1,7 @@
 extern crate glfw;
 
 use gl::types::{GLfloat, GLsizeiptr};
+use glfw::ffi::glfwGetTime;
 
 use self::glfw::{Action, Context, Key};
 
@@ -18,9 +19,13 @@ const SCR_HEIGHT: u32 = 600;
 
 const VERTEX_SHADER_SOURCE: &str = r#"
     #version 330 core
+
     layout (location = 0) in vec3 aPos;
+	out vec4 vertexColor; // specify a color output to the fragment shader
+
     void main() {
-        gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+        gl_Position = vec4(aPos, 1.0);
+		vertexColor = vec4(0.5, 0.0, 0.0, 1.0); // set the output variable to a dark-red color
     }
 "#;
 
@@ -28,8 +33,10 @@ const FRAG_SHADER_SOURCE: &str = r#"
 	#version 330 core
 	out vec4 FragColor;
 
+	in vec4 vertexColor;
+
 	void main() {
-		FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+		FragColor = vertexColor;
 	} 
 "#;
 
@@ -37,12 +44,14 @@ const FRAG_SHADER_YELLOW_SOURCE: &str = r#"
 	#version 330 core
 	out vec4 FragColor;
 
+	uniform vec4 ourColor;
+
 	void main() {
-		FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+		FragColor = ourColor;
 	} 
 "#;
 
-pub fn main_1_2_5() {
+pub fn main_1_3_1() {
     // glfw: initialize and configure
     // ------------------------------
     let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
@@ -211,7 +220,15 @@ pub fn main_1_2_5() {
 			// seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 			gl::BindVertexArray(vaos[0]);
 			gl::DrawArrays(gl::TRIANGLES, 0, 3);
+
 			gl::UseProgram(yellow_shader_program);
+
+			let time_value = glfwGetTime();
+			let green_value = (f32::sin(time_value as GLfloat) / 2.0) + 0.5;
+			let our_color = CString::new("ourColor").unwrap();
+			let vertex_color_location = gl::GetUniformLocation(yellow_shader_program, our_color.as_ptr());
+			gl::Uniform4f(vertex_color_location, 0.0, green_value, 0.0, 1.0);
+			
 			gl::BindVertexArray(vaos[1]);
 			gl::DrawArrays(gl::TRIANGLES, 0, 3);
 			// gl::DrawElements(gl::TRIANGLES, 6, gl::UNSIGNED_INT, ptr::null());

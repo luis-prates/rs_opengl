@@ -24,3 +24,5 @@ mod _4_3_textures_combined_ex1;
 pub use self::_4_3_textures_combined_ex1::*;
 mod _4_4_textures_combined_ex2;
 pub use self::_4_4_textures_combined_ex2::*;
+mod _4_5_textures_combined_ex3;
+pub use self::_4_5_textures_combined_ex3::*;

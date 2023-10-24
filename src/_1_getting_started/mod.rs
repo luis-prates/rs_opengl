@@ -22,3 +22,5 @@ mod _4_2_textures_combined;
 pub use self::_4_2_textures_combined::*;
 mod _4_3_textures_combined_ex1;
 pub use self::_4_3_textures_combined_ex1::*;
+mod _4_4_textures_combined_ex2;
+pub use self::_4_4_textures_combined_ex2::*;

@@ -1,5 +1,7 @@
 
+mod common;
 mod shader;
+mod camera;
 
 #[cfg(feature = "chapter-1")]
 mod _1_getting_started;
@@ -39,6 +41,7 @@ fn main() {
 		#[cfg(feature = "chapter-1")] "1_7_1" => main_1_7_1(),
 		#[cfg(feature = "chapter-1")] "1_7_2" => main_1_7_2(),
 		#[cfg(feature = "chapter-1")] "1_7_3" => main_1_7_3(),
+		#[cfg(feature = "chapter-1")] "1_7_4" => main_1_7_4(),
         _     => println!("Unknown tutorial id")
     }
 }

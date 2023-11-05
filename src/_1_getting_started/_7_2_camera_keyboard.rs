@@ -68,7 +68,7 @@ pub fn main_1_7_2() {
     // ---------------------------------------
     gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
-	let (our_shader, vbo, vao, texture1, texture2, cube_positions) = unsafe {
+	let (our_shader, vao, texture1, texture2, cube_positions) = unsafe {
 
 		gl::Enable(gl::DEPTH_TEST);
 
@@ -218,7 +218,7 @@ pub fn main_1_7_2() {
 		gl::GenerateMipmap(gl::TEXTURE_2D);
 
 
-		(our_shader, vbo, vao, texture1, texture2, cube_positions)
+		(our_shader, vao, texture1, texture2, cube_positions)
 	};
 
 

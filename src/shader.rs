@@ -15,6 +15,7 @@ pub struct Shader {
 
 /// NOTE: mixture of `shader_s.h` and `shader_m.h` (the latter just contains
 /// a few more setters for uniforms)
+#[allow(dead_code)]
 impl Shader {
 	pub fn new(vertex_path: &str, fragment_path: &str) -> Shader {
 		let mut shader = Shader { id: 0 };

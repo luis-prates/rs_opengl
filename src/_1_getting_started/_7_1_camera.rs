@@ -11,7 +11,6 @@ use self::glfw::{Action, Context, Key};
 extern crate gl;
 use self::gl::types::*;
 
-use std::f32::consts::PI;
 use std::{mem, ptr};
 use std::os::raw::c_void;
 use std::sync::mpsc::Receiver;
@@ -57,7 +56,7 @@ pub fn main_1_7_1() {
     // ---------------------------------------
     gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
-	let (our_shader, vbo, vao, texture1, texture2, cube_positions) = unsafe {
+	let (our_shader, vao, texture1, texture2, cube_positions) = unsafe {
 
 		gl::Enable(gl::DEPTH_TEST);
 
@@ -207,7 +206,7 @@ pub fn main_1_7_1() {
 		gl::GenerateMipmap(gl::TEXTURE_2D);
 
 
-		(our_shader, vbo, vao, texture1, texture2, cube_positions)
+		(our_shader, vao, texture1, texture2, cube_positions)
 	};
 
 

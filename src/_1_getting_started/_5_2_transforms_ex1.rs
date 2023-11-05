@@ -56,7 +56,7 @@ pub fn main_1_5_2() {
     // ---------------------------------------
     gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
-	let (our_shader, vbo, vao, ebo, texture1, texture2) = unsafe {
+	let (our_shader, vao, texture1, texture2) = unsafe {
 		let our_shader = Shader::new(
 			"src/_1_getting_started/shaders/5.1.transform.vs", 
 			"src/_1_getting_started/shaders/4.6.texture_shader_combined_ex4.fs"
@@ -172,7 +172,7 @@ pub fn main_1_5_2() {
 		gl::GenerateMipmap(gl::TEXTURE_2D);
 
 
-		(our_shader, vbo, vao, ebo, texture1, texture2)
+		(our_shader, vao, texture1, texture2)
 	};
 
 

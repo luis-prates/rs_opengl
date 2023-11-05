@@ -1,7 +1,6 @@
 extern crate glfw;
 
-use cgmath::{Matrix4, vec3, Rad, Deg, perspective};
-use cgmath::prelude::*;
+use cgmath::{Matrix4, vec3, Deg, perspective};
 use gl::types::{GLfloat, GLsizeiptr};
 
 use crate::shader;
@@ -56,7 +55,7 @@ pub fn main_1_6_1() {
     // ---------------------------------------
     gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
-	let (our_shader, vbo, vao, ebo, texture1, texture2) = unsafe {
+	let (our_shader, vao, texture1, texture2) = unsafe {
 		let our_shader = Shader::new(
 			"src/_1_getting_started/shaders/6.1.coordinates.vs", 
 			"src/_1_getting_started/shaders/6.1.coordinates.fs"
@@ -172,7 +171,7 @@ pub fn main_1_6_1() {
 		gl::GenerateMipmap(gl::TEXTURE_2D);
 
 
-		(our_shader, vbo, vao, ebo, texture1, texture2)
+		(our_shader, vao, texture1, texture2)
 	};
 
 

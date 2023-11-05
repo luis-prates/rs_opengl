@@ -46,3 +46,5 @@ mod _7_2_camera_keyboard;
 pub use self::_7_2_camera_keyboard::*;
 mod _7_3_camera_mouse;
 pub use self::_7_3_camera_mouse::*;
+mod _7_4_camera_class;
+pub use self::_7_4_camera_class::*;

@@ -9,7 +9,6 @@ use self::glfw::{Action, Context, Key};
 extern crate gl;
 use self::gl::types::*;
 
-use std::ffi::{CString, CStr};
 use std::{mem, ptr};
 use std::os::raw::c_void;
 use std::sync::mpsc::Receiver;
@@ -54,7 +53,7 @@ pub fn main_1_4_1() {
     // ---------------------------------------
     gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
-	let (our_shader, vbo, vao, ebo, texture) = unsafe {
+	let (our_shader, vao, texture) = unsafe {
 		let our_shader = Shader::new(
 			"src/_1_getting_started/shaders/4.1.texture_shader.vs", 
 			"src/_1_getting_started/shaders/4.1.texture_shader.fs"
@@ -144,7 +143,7 @@ pub fn main_1_4_1() {
 		gl::GenerateMipmap(gl::TEXTURE_2D);
 
 
-		(our_shader, vbo, vao, ebo, texture)
+		(our_shader, vao, texture)
 	};
 
 

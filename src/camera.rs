@@ -61,8 +61,39 @@ impl Default for Camera {
 impl Camera {
 	/// Returns the view matrix calculated using Eular Angles and the LookAt Matrix
     pub fn get_view_matrix(&self) -> Matrix4 {
-        Matrix4::look_at(self.position, self.position + self.front, self.up)
+        Camera::calculate_look_at_matrix(self.position, self.position + self.front, self.up)
     }
+
+	fn calculate_look_at_matrix(position: Point3, target: Point3, world_up: Vector3) -> Matrix4 {
+		// 1. Position = known
+		// 2. Calculate cameraDirection
+		let z_axis = (position - target).normalize();
+		// 3. Get positive right axis vector
+		let x_axis = world_up.normalize().cross(z_axis);
+		// 4. Calculate camera up vector
+		let y_axis = z_axis.cross(x_axis);
+
+		// Create translation and rotation matrix
+		// In glm we access elements as mat[col][row] due to column-major layout
+		let mut translation = Matrix4::identity(); // Identity matrix by default
+		translation[3][0] = -position.x; // Third column, first row
+		translation[3][1] = -position.y;
+		translation[3][2] = -position.z;
+
+		let mut rotation = Matrix4::identity();
+		rotation[0][0] = x_axis.x; // First column, first row
+		rotation[1][0] = x_axis.y;
+		rotation[2][0] = x_axis.z;
+		rotation[0][1] = y_axis.x; // First column, second row
+		rotation[1][1] = y_axis.y;
+		rotation[2][1] = y_axis.z;
+		rotation[0][2] = z_axis.x; // First column, third row
+		rotation[1][2] = z_axis.y;
+		rotation[2][2] = z_axis.z;
+
+		// Return lookAt matrix as combination of translation and rotation matrix
+		rotation * translation // Remember to read from right to left (first translation then rotation)
+	}
 
 	/// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     pub fn process_keyboard(&mut self, direction: CameraMovement, delta_time: f32) {

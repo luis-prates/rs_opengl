@@ -8,6 +8,11 @@ mod _1_getting_started;
 #[cfg(feature = "chapter-1")]
 use _1_getting_started::*;
 
+#[cfg(feature = "chapter-2")]
+mod _2_lighting;
+#[cfg(feature = "chapter-2")]
+use _2_lighting::*;
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 2 {
@@ -42,6 +47,8 @@ fn main() {
 		#[cfg(feature = "chapter-1")] "1_7_2" => main_1_7_2(),
 		#[cfg(feature = "chapter-1")] "1_7_3" => main_1_7_3(),
 		#[cfg(feature = "chapter-1")] "1_7_4" => main_1_7_4(),
+
+		#[cfg(feature = "chapter-2")] "2_1"   => main_2_1(),
         _     => println!("Unknown tutorial id")
     }
 }

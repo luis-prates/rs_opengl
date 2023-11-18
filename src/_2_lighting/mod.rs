@@ -1,2 +1,10 @@
 mod _1_colors;
 pub use self::_1_colors::*;
+mod _2_1_basic_lighting_diffuse;
+pub use self::_2_1_basic_lighting_diffuse::*;
+mod _2_2_basic_lighting_diffuse_ex1;
+pub use self::_2_2_basic_lighting_diffuse_ex1::*;
+mod _2_3_basic_lighting_diffuse_ex2;
+pub use self::_2_3_basic_lighting_diffuse_ex2::*;
+mod _2_4_basic_lighting_diffuse_ex3;
+pub use self::_2_4_basic_lighting_diffuse_ex3::*;

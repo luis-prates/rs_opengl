@@ -53,6 +53,8 @@ fn main() {
 		#[cfg(feature = "chapter-2")] "2_2_2"   => main_2_2_2(),
 		#[cfg(feature = "chapter-2")] "2_2_3"   => main_2_2_3(),
 		#[cfg(feature = "chapter-2")] "2_2_4"   => main_2_2_4(),
+		#[cfg(feature = "chapter-2")] "2_3_1"   => main_2_3_1(),
+		#[cfg(feature = "chapter-2")] "2_3_2"   => main_2_3_2(),
         _     => println!("Unknown tutorial id")
     }
 }

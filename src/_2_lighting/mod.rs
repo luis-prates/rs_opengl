@@ -8,3 +8,7 @@ mod _2_3_basic_lighting_diffuse_ex2;
 pub use self::_2_3_basic_lighting_diffuse_ex2::*;
 mod _2_4_basic_lighting_diffuse_ex3;
 pub use self::_2_4_basic_lighting_diffuse_ex3::*;
+mod _3_1_materials;
+pub use self::_3_1_materials::*;
+mod _3_2_materials_ex1;
+pub use self::_3_2_materials_ex1::*;

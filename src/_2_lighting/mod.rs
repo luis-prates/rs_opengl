@@ -26,3 +26,5 @@ mod _5_3_light_casters_spot;
 pub use _5_3_light_casters_spot::*;
 mod _5_4_light_casters_spot_smooth;
 pub use _5_4_light_casters_spot_smooth::*;
+mod _6_1_multiple_lights;
+pub use _6_1_multiple_lights::*;

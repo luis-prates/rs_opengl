@@ -303,7 +303,7 @@ pub fn main_2_6_1() {
             // point light 4
             lighting_shader.set_vector3(CStr::from_bytes_with_nul(b"pointLights[3].position\0").unwrap(), &point_light_positions[3]);
             lighting_shader.set_vec3(CStr::from_bytes_with_nul(b"pointLights[3].ambient\0").unwrap(), 0.05, 0.05, 0.05);
-            lighting_shader.set_vec3(CStr::from_bytes_with_nul(b"pointLights[3].diffuse\0").unwrap(), 0.8, 0.8, 0.8);
+            lighting_shader.set_vec3(CStr::from_bytes_with_nul(b"pointLights[3].diffuse\0").unwrap(), 1.0, 0.0, 0.0);
             lighting_shader.set_vec3(CStr::from_bytes_with_nul(b"pointLights[3].specular\0").unwrap(), 1.0, 1.0, 1.0);
             lighting_shader.set_float(CStr::from_bytes_with_nul(b"pointLights[3].constant\0").unwrap(), 1.0);
             lighting_shader.set_float(CStr::from_bytes_with_nul(b"pointLights[3].linear\0").unwrap(), 0.09);

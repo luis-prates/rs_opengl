@@ -1,6 +1,6 @@
 use std::ffi::{CString, CStr};
 use std::fs::File;
-use std:: io::Read;
+use std::io::Read;
 use std::ptr;
 use std::str;
 

@@ -1,7 +1,10 @@
 
 mod common;
 mod shader;
+mod macros;
 mod camera;
+mod model;
+mod mesh;
 
 #[cfg(feature = "chapter-1")]
 mod _1_getting_started;
@@ -12,6 +15,11 @@ use _1_getting_started::*;
 mod _2_lighting;
 #[cfg(feature = "chapter-2")]
 use _2_lighting::*;
+
+#[cfg(feature = "chapter-3")]
+mod _3_model_loading;
+#[cfg(feature = "chapter-3")]
+use _3_model_loading::*;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -49,20 +57,23 @@ fn main() {
 		#[cfg(feature = "chapter-1")] "1_7_4" => main_1_7_4(),
 
 		#[cfg(feature = "chapter-2")] "2_1"   => main_2_1(),
-		#[cfg(feature = "chapter-2")] "2_2_1"   => main_2_2_1(),
-		#[cfg(feature = "chapter-2")] "2_2_2"   => main_2_2_2(),
-		#[cfg(feature = "chapter-2")] "2_2_3"   => main_2_2_3(),
-		#[cfg(feature = "chapter-2")] "2_2_4"   => main_2_2_4(),
-		#[cfg(feature = "chapter-2")] "2_3_1"   => main_2_3_1(),
-		#[cfg(feature = "chapter-2")] "2_3_2"   => main_2_3_2(),
-		#[cfg(feature = "chapter-2")] "2_4_1"   => main_2_4_1(),
-		#[cfg(feature = "chapter-2")] "2_4_2"   => main_2_4_2(),
-		#[cfg(feature = "chapter-2")] "2_4_3"   => main_2_4_3(),
-		#[cfg(feature = "chapter-2")] "2_5_1"   => main_2_5_1(),
-		#[cfg(feature = "chapter-2")] "2_5_2"   => main_2_5_2(),
-		#[cfg(feature = "chapter-2")] "2_5_3"   => main_2_5_3(),
-		#[cfg(feature = "chapter-2")] "2_5_4"   => main_2_5_4(),
-		#[cfg(feature = "chapter-2")] "2_6_1"   => main_2_6_1(),
+		#[cfg(feature = "chapter-2")] "2_2_1" => main_2_2_1(),
+		#[cfg(feature = "chapter-2")] "2_2_2" => main_2_2_2(),
+		#[cfg(feature = "chapter-2")] "2_2_3" => main_2_2_3(),
+		#[cfg(feature = "chapter-2")] "2_2_4" => main_2_2_4(),
+		#[cfg(feature = "chapter-2")] "2_3_1" => main_2_3_1(),
+		#[cfg(feature = "chapter-2")] "2_3_2" => main_2_3_2(),
+		#[cfg(feature = "chapter-2")] "2_4_1" => main_2_4_1(),
+		#[cfg(feature = "chapter-2")] "2_4_2" => main_2_4_2(),
+		#[cfg(feature = "chapter-2")] "2_4_3" => main_2_4_3(),
+		#[cfg(feature = "chapter-2")] "2_5_1" => main_2_5_1(),
+		#[cfg(feature = "chapter-2")] "2_5_2" => main_2_5_2(),
+		#[cfg(feature = "chapter-2")] "2_5_3" => main_2_5_3(),
+		#[cfg(feature = "chapter-2")] "2_5_4" => main_2_5_4(),
+		#[cfg(feature = "chapter-2")] "2_6_1" => main_2_6_1(),
+
+		#[cfg(feature = "chapter-3")] "3_1"   => main_3_1(),
+
         _     => println!("Unknown tutorial id")
     }
 }

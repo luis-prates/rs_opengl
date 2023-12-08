@@ -103,10 +103,20 @@ impl Mesh {
             };
             // now set the sampler to the correct texture unit
             let sampler = CString::new(format!("{}{}", name, number)).unwrap();
+            // println!("sampler: {}. Shader id is: {}", sampler.to_str().unwrap(), shader.id);
             gl::Uniform1i(gl::GetUniformLocation(shader.id, sampler.as_ptr()), i as i32);
             // and finally bind the texture
             gl::BindTexture(gl::TEXTURE_2D, texture.id);
         }
+
+        /*if self.textures.is_empty() {
+            // println!("Texture is empty. Shader id is: {}", shader.id);
+            gl::ActiveTexture(gl::TEXTURE0);
+            let diffuse_map = load_texture("resources/textures/container2.png");
+            let sampler = CString::new("texture_diffuse1").unwrap();
+            gl::Uniform1i(gl::GetUniformLocation(shader.id, sampler.as_ptr()), 1);
+            gl::BindTexture(gl::TEXTURE_2D, diffuse_map);
+        }*/
 
         // draw mesh
         gl::BindVertexArray(self.vao);

@@ -85,7 +85,7 @@ pub fn main_3_1() {
 		);
 
 		// load models
-		let our_model = Model::new("resources/objects/nanosuit/nanosuit.obj");
+		let our_model = Model::new("resources/textures/42.obj");
 		let our_model2: Model = Model::new("resources/objects/planet/planet.obj");
 
 		// draw in wireframe
@@ -137,7 +137,7 @@ pub fn main_3_1() {
 			our_shader.set_mat4(CStr::from_bytes_with_nul(b"projection\0").unwrap(), &projection);
 
 			// render the loaded model
-			let mut model = Matrix4::<f32>::from_translation(vec3(0.0, -1.75, 0.0)); // translate it down so it's at the center of the scene
+			let mut model = Matrix4::<f32>::from_translation(vec3(0.0, 0.0, 0.0)); // translate it down so it's at the center of the scene
 			model = model * Matrix4::from_scale(0.2);
 			our_shader.set_mat4(CStr::from_bytes_with_nul(b"model\0").unwrap(), &model);
 			our_model.draw(&our_shader);

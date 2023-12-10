@@ -1,0 +1,40 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+	  {
+		"type": "lldb",
+		"request": "launch",
+		"name": "Debug executable 'rs_opengl'",
+		"cargo": {
+		  "args": ["build", "--bin=rs_opengl", "--package=rs_opengl"],
+		  "filter": {
+			"name": "rs_opengl",
+			"kind": "bin"
+		  }
+		},
+		"args": [
+		  "3_1"
+		],
+		"cwd": "${workspaceFolder}"
+	  },
+	  {
+		"type": "lldb",
+		"request": "launch",
+		"name": "Debug unit tests in executable 'rs_opengl'",
+		"cargo": {
+		  "args": [
+			"test",
+			"--no-run",
+			"--bin=rs_opengl",
+			"--package=rs_opengl"
+		  ],
+		  "filter": {
+			"name": "rs_opengl",
+			"kind": "bin"
+		  }
+		},
+		"args": [],
+		"cwd": "${workspaceFolder}"
+	  }
+	]
+}

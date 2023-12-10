@@ -35,3 +35,7 @@ chapter-4 = []
 chapter-5 = []
 chapter-6 = []
 chapter-7 = []
+
+[profile.release]
+opt-level = 1
+lto = true

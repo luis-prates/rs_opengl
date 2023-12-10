@@ -1,6 +1,6 @@
 extern crate glfw;
 
-use cgmath::{Matrix4, vec3, Deg, perspective, Point3};
+use cgmath::{Matrix4, vec3, Deg, perspective, Point3, InnerSpace};
 
 use crate::shader;
 use crate::camera;
@@ -86,7 +86,8 @@ pub fn main_3_1() {
 
 		// load models
 		let our_model = Model::new("resources/textures/42.obj");
-		let our_model2: Model = Model::new("resources/objects/planet/planet.obj");
+		let our_model2: Model = Model::new("resources/objects/planet/planet_offset_down_more.obj");
+		// let our_model: Model = Model::new("resources/objects/nanosuit/nanosuit.obj");
 
 		// draw in wireframe
         // gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
@@ -137,12 +138,24 @@ pub fn main_3_1() {
 			our_shader.set_mat4(CStr::from_bytes_with_nul(b"projection\0").unwrap(), &projection);
 
 			// render the loaded model
-			let mut model = Matrix4::<f32>::from_translation(vec3(0.0, 0.0, 0.0)); // translate it down so it's at the center of the scene
-			model = model * Matrix4::from_scale(0.2);
+			let (center_x, center_y, center_z) = our_model.get_center_all_axes();
+			let angle = glfw.get_time() as f32 * 50.0;
+			// let mut model = Matrix4::<f32>::from_translation(vec3(0.0, 0.0, center_x)); // translate it down so it's at the center of the scene
+			let mut model = Matrix4::from_scale(0.2);
+			model = model * Matrix4::from_axis_angle(vec3(0.0, 0.0, 1.0).normalize(), Deg(angle));
+			// let mut angle = 20.0;
+			// let mut model = Matrix4::from_angle_y(Deg(angle));
+			 // -center_z
+			model = model * Matrix4::<f32>::from_translation(vec3(-center_x, -center_y, -center_z)); // translate it down so it's at the center of the scene
+			// model = model * Matrix4::from_axis_angle(vec3(0.0, 1.0, 0.0), Deg(-90.0));
+
 			our_shader.set_mat4(CStr::from_bytes_with_nul(b"model\0").unwrap(), &model);
 			our_model.draw(&our_shader);
-			let mut model = Matrix4::<f32>::from_translation(vec3(5.0, 1.75, 0.0)); // translate it down so it's at the center of the scene
-			model = model * Matrix4::from_scale(0.2);
+			let (center_x, center_y, center_z) = our_model2.get_center_all_axes();
+			let mut model = Matrix4::from_scale(0.2);
+			model = model * Matrix4::<f32>::from_translation(vec3(5.0, 1.75, 0.0));
+			model = model * Matrix4::from_axis_angle(vec3(1.0, 0.0, 0.0), Deg(angle));
+			model = model * Matrix4::from_translation(vec3(-center_x, -center_y, -center_z));
 			our_shader.set_mat4(CStr::from_bytes_with_nul(b"model\0").unwrap(), &model);
 			our_model2.draw(&our_shader);
 

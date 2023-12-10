@@ -38,6 +38,40 @@ impl Model {
         }
     }
 
+	pub fn get_center_all_axes(&self) -> (f32, f32, f32) {
+		let (min_x, max_x) = self.get_min_max_axis(|vertice| vertice.position.x);
+		let (min_y, max_y) = self.get_min_max_axis(|vertice| vertice.position.y);
+		let (min_z, max_z) = self.get_min_max_axis(|vertice| vertice.position.z);
+	
+		let center_x = self.calculate_center(min_x, max_x);
+		let center_y = self.calculate_center(min_y, max_y);
+		let center_z = self.calculate_center(min_z, max_z);
+	
+		(center_x, center_y, center_z)
+	}
+
+	fn get_min_max_axis<F>(&self, axis_fn: F) -> (f32, f32)
+	where
+		F: Fn(&Vertex) -> f32,
+	{
+		self.meshes
+			.iter()
+			.flat_map(|mesh| &mesh.vertices)
+			.fold((f32::INFINITY, f32::NEG_INFINITY), |(min, max), vertice| {
+				(min.min(axis_fn(vertice)), max.max(axis_fn(vertice)))
+			})
+	}
+
+fn calculate_center(&self, min: f32, max: f32) -> f32 {
+    let center = (max - min) / 2.0;
+
+    if f32::abs(max) == f32::abs(min) || max > 0.0 {
+        max - center
+    } else {
+        min + center
+    }
+}
+
 	 // loads a model from file and stores the resulting meshes in the meshes vector.
 	fn load_model(&mut self, path: &str) {
         let path = Path::new(path);

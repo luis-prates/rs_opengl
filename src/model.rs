@@ -62,15 +62,15 @@ impl Model {
 			})
 	}
 
-fn calculate_center(&self, min: f32, max: f32) -> f32 {
-    let center = (max - min) / 2.0;
+	fn calculate_center(&self, min: f32, max: f32) -> f32 {
+		let center = (max - min) / 2.0;
 
-    if f32::abs(max) == f32::abs(min) || max > 0.0 {
-        max - center
-    } else {
-        min + center
-    }
-}
+		if f32::abs(max) == f32::abs(min) || max > 0.0 {
+			max - center
+		} else {
+			min + center
+		}
+	}
 
 	 // loads a model from file and stores the resulting meshes in the meshes vector.
 	fn load_model(&mut self, path: &str) {

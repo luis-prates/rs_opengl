@@ -12,7 +12,7 @@ use self::glfw::Context;
 
 extern crate gl;
 
-use std::ffi::CStr;
+use std::ffi::{CStr, CString };
 
 use common::{process_events, process_input};
 use shader::Shader;
@@ -88,12 +88,12 @@ pub fn main_3_2() {
 		gl::Enable(gl::DEPTH_TEST);
 
 		let our_shader = Shader::new(
-			"src/_3_model_loading/shaders/1.model_loading.vs", 
-			"src/_3_model_loading/shaders/1.model_loading.fs"
+			"src/_3_model_loading/shaders/1.model_loading_42.vs", 
+			"src/_3_model_loading/shaders/1.model_loading_42.fs"
 		);
 
 		// load models
-		let our_model = Model::new("resources/textures/teapot2.obj");
+		let our_model = Model::new("resources/textures/42.obj");
 		let our_model2: Model = Model::new("resources/objects/planet/planet_offset_down_more.obj");
 		// let our_model: Model = Model::new("resources/objects/nanosuit/nanosuit.obj");
 
@@ -115,6 +115,10 @@ pub fn main_3_2() {
 	let mut position_x = 0.0;
 	let mut position_y = 0.0;
 	let mut position_z = 0.0;
+	let mut use_color = 0;
+	let mut mix_value = 0.0;
+	let delay_time = 1.0;
+	let mut last_time: f32 = 0.0;
 
     // -----------
     while !window.should_close() {
@@ -156,10 +160,47 @@ pub fn main_3_2() {
 		if window.get_key(Key::E) == Action::Press {
 			position_z += 1.0 * velocity;
 		}
+		if window.get_key(Key::Down) == Action::Press {
+			mix_value -= 0.01;
+			if mix_value <= 0.0 {
+				mix_value = 0.0;
+			}
+			println!("mix value: {}", mix_value);
 
+		}
+		if window.get_key(Key::Up) == Action::Press {
+			mix_value += 0.01;
+			if mix_value >= 1.0 {
+				mix_value = 1.0;
+			}
+			println!("mix value: {}", mix_value);
+		}
+		
 		unsafe {
 			gl::ClearColor(0.1, 0.1, 0.1, 1.0);
 			gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+			
+			let use_texturing = CString::new("useTexturing").unwrap();
+			let use_mix = CString::new("mixValue").unwrap();
+			if window.get_key(Key::Enter) == Action::Press && glfw.get_time() as f32 - last_time > delay_time {
+				use_color ^= 1;
+				println!("use color value: {}", use_color);
+				last_time = glfw.get_time() as f32;
+			}
+			if use_color == 1 {
+				mix_value += 0.005;
+				if mix_value >= 1.0 {
+					mix_value = 1.0;
+				}
+			}
+			else {
+				mix_value -= 0.005;
+				if mix_value <= 0.0 {
+					mix_value = 0.0;
+				}
+			}
+			gl::Uniform1i(gl::GetUniformLocation(our_shader.id, use_texturing.as_ptr()), use_color);
+			gl::Uniform1f(gl::GetUniformLocation(our_shader.id, use_mix.as_ptr()), mix_value);
 
 			// be sure to activate shader when setting uniforms/drawing objects
 			our_shader.use_program();
@@ -181,6 +222,9 @@ pub fn main_3_2() {
 
 			our_shader.set_mat4(CStr::from_bytes_with_nul(b"model\0").unwrap(), &model);
 			our_model.draw(&our_shader);
+
+			gl::Uniform1i(gl::GetUniformLocation(our_shader.id, use_texturing.as_ptr()), 1);
+			gl::Uniform1f(gl::GetUniformLocation(our_shader.id, use_mix.as_ptr()), 0.0);
 
 			let (center_x, center_y, center_z) = our_model2.get_center_all_axes();
 			let mut model = Matrix4::from_scale(0.2);

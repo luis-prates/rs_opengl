@@ -58,9 +58,9 @@ pub fn main_1_3_3() {
 		// make vertices
 		let vertices: [f32; 18] = [
 			// positions     // colors
-			0.5, -0.5, 0.0,  1.0, 0.0, 0.0, // bottom right
-			-0.5, -0.5, 0.0, 0.0, 1.0, 0.0, // bottom left
-			0.0, 0.5, 0.0,   0.0, 0.0, 1.0  // top
+			0.5, -0.5, 0.0,  0.2, 0.2, 0.2, // bottom right
+			-0.5, -0.5, 0.0, 0.2, 0.2, 0.2, // bottom left
+			0.0, 0.5, 0.0,   0.2, 0.2, 0.2  // top
 		];
 	
 		let (mut vbo, mut vao) = (0, 0);

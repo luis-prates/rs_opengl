@@ -80,6 +80,7 @@ impl Model {
         self.directory = path.parent().unwrap_or_else(|| Path::new("")).to_str().unwrap().into();
         let obj = tobj::load_obj(path);
 
+		let initial_grey = 0.05;
         let (models, materials) = obj.unwrap();
         for model in models {
             let mesh = &model.mesh;
@@ -101,6 +102,7 @@ impl Model {
 				} else {
 					vertexx.tex_coords = generate_texture_coordinates(&vertexx.position);
 					// println!("tex coords are: {:?}", vertexx.tex_coords);
+					vertexx.color = vec3(initial_grey + (i / 3) as f32 * 0.05, initial_grey + (i / 3) as f32 * 0.05, initial_grey + (i / 3) as f32 * 0.05);
 				}
                 // vertices.push(Vertex {
                 //     position:  vec3(p[i*3], p[i*3+1], p[i*3+2]),

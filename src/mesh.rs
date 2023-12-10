@@ -26,6 +26,8 @@ pub struct Vertex {
 	pub tangent: Vector3<f32>,
 	// bitangent
 	pub bitangent: Vector3<f32>,
+	// color
+	pub color: Vector3<f32>
 }
 
 impl Default for Vertex {
@@ -36,6 +38,7 @@ impl Default for Vertex {
 			tex_coords: Vector2::zero(),
 			tangent: Vector3::zero(),
 			bitangent: Vector3::zero(),
+			color: Vector3::zero(),
 		}
 	}
 }
@@ -109,6 +112,15 @@ impl Mesh {
             gl::BindTexture(gl::TEXTURE_2D, texture.id);
         }
 
+		// if self.textures.is_empty() {
+		// 	let sampler = CString::new("useTexturing").unwrap();
+		// 	gl::Uniform1i(gl::GetUniformLocation(shader.id, sampler.as_ptr()), 0);
+
+		// } else {
+		// 	let sampler = CString::new("useTexturing").unwrap();
+		// 	gl::Uniform1i(gl::GetUniformLocation(shader.id, sampler.as_ptr()), 1);
+		// }
+
         /*if self.textures.is_empty() {
             // println!("Texture is empty. Shader id is: {}", shader.id);
             gl::ActiveTexture(gl::TEXTURE0);
@@ -165,6 +177,9 @@ impl Mesh {
         // vertex bitangent
         gl::EnableVertexAttribArray(4);
         gl::VertexAttribPointer(4, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, bitangent) as *const c_void);
+		// vertex color
+		gl::EnableVertexAttribArray(5);
+        gl::VertexAttribPointer(5, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, color) as *const c_void);
 
         gl::BindVertexArray(0);
 	}

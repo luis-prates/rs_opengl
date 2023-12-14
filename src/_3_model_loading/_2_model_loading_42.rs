@@ -2,6 +2,7 @@ extern crate glfw;
 
 use cgmath::{Matrix4, vec3, Deg, perspective, Point3, InnerSpace};
 use glfw::{Key, Action};
+use rand::Rng;
 
 use crate::shader;
 use crate::camera;
@@ -83,7 +84,7 @@ pub fn main_3_2() {
     // ---------------------------------------
     gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
-	let (our_shader, our_model, our_model2) = unsafe {
+	let (our_shader, mut our_model, our_model2) = unsafe {
 
 		gl::Enable(gl::DEPTH_TEST);
 
@@ -119,6 +120,7 @@ pub fn main_3_2() {
 	let mut mix_value = 0.0;
 	let delay_time = 1.0;
 	let mut last_time: f32 = 0.0;
+	let mut new_mix = 0.0;
 
     // -----------
     while !window.should_close() {
@@ -166,7 +168,6 @@ pub fn main_3_2() {
 				mix_value = 0.0;
 			}
 			println!("mix value: {}", mix_value);
-
 		}
 		if window.get_key(Key::Up) == Action::Press {
 			mix_value += 0.01;
@@ -182,6 +183,7 @@ pub fn main_3_2() {
 			
 			let use_texturing = CString::new("useTexturing").unwrap();
 			let use_mix = CString::new("mixValue").unwrap();
+			let use_new_mix = CString::new("newMix").unwrap();
 			if window.get_key(Key::Enter) == Action::Press && glfw.get_time() as f32 - last_time > delay_time {
 				use_color ^= 1;
 				println!("use color value: {}", use_color);
@@ -189,8 +191,12 @@ pub fn main_3_2() {
 			}
 			if use_color == 1 {
 				mix_value += 0.005;
+				new_mix += 0.005;
 				if mix_value >= 1.0 {
 					mix_value = 1.0;
+				}
+				if new_mix >= 1.0 {
+					new_mix = 1.0;
 				}
 			}
 			else {
@@ -199,8 +205,15 @@ pub fn main_3_2() {
 					mix_value = 0.0;
 				}
 			}
+
+			if window.get_key(Key::K) == Action::Press && glfw.get_time() as f32 - last_time > delay_time {
+				new_mix = 0.0;
+				our_model.change_color(&vec3(rand::thread_rng().gen_range(0.0, 1.1), rand::thread_rng().gen_range(0.0, 1.1), rand::thread_rng().gen_range(0.0, 1.1)));
+				last_time = glfw.get_time() as f32;
+			}
 			gl::Uniform1i(gl::GetUniformLocation(our_shader.id, use_texturing.as_ptr()), use_color);
 			gl::Uniform1f(gl::GetUniformLocation(our_shader.id, use_mix.as_ptr()), mix_value);
+			gl::Uniform1f(gl::GetUniformLocation(our_shader.id, use_new_mix.as_ptr()), new_mix);
 
 			// be sure to activate shader when setting uniforms/drawing objects
 			our_shader.use_program();

@@ -22,6 +22,9 @@ pub struct Model {
     pub meshes: Vec<Mesh>,
     pub textures_loaded: Vec<Texture>,   // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
     directory: String,
+	pub base_color_x: f32,
+	pub base_color_y: f32,
+	pub base_color_z: f32,
 }
 
 impl Model {
@@ -48,6 +51,28 @@ impl Model {
 		let center_z = self.calculate_center(min_z, max_z);
 	
 		(center_x, center_y, center_z)
+	}
+
+	pub fn change_color(&mut self, new_color: &Vector3<f32>) {
+		for (i, vertice) in &mut self.meshes[0].vertices.iter_mut().enumerate() {
+			vertice.color = vertice.new_color;
+			vertice.new_color.x = new_color.x + (i / 3) as f32 * 0.05;
+			vertice.new_color.y = new_color.y + (i / 3) as f32 * 0.05;
+			vertice.new_color.z = new_color.z + (i / 3) as f32 * 0.05;
+			if vertice.new_color.x > 1.0 {
+				vertice.new_color.x = 1.0;
+			}
+			if vertice.new_color.y > 1.0 {
+				vertice.new_color.y = 1.0;
+			}
+			if vertice.new_color.z > 1.0 {
+				vertice.new_color.z = 1.0;
+			}
+			self.base_color_x = new_color.x;
+			self.base_color_y = new_color.y;
+			self.base_color_z = new_color.z;
+		}
+		unsafe { self.meshes[0].setup_mesh() };
 	}
 
 	fn get_min_max_axis<F>(&self, axis_fn: F) -> (f32, f32)
@@ -80,7 +105,9 @@ impl Model {
         self.directory = path.parent().unwrap_or_else(|| Path::new("")).to_str().unwrap().into();
         let obj = tobj::load_obj(path);
 
-		let initial_grey = 0.05;
+		self.base_color_x = 0.05;
+		self.base_color_y = 0.05;
+		self.base_color_z = 0.05;
         let (models, materials) = obj.unwrap();
         for model in models {
             let mesh = &model.mesh;
@@ -102,14 +129,9 @@ impl Model {
 				} else {
 					vertexx.tex_coords = generate_texture_coordinates(&vertexx.position);
 					// println!("tex coords are: {:?}", vertexx.tex_coords);
-					vertexx.color = vec3(initial_grey + (i / 3) as f32 * 0.05, initial_grey + (i / 3) as f32 * 0.05, initial_grey + (i / 3) as f32 * 0.05);
+					vertexx.color = vec3(self.base_color_x + (i / 3) as f32 * 0.05, self.base_color_y + (i / 3) as f32 * 0.05, self.base_color_z + (i / 3) as f32 * 0.05);
+					vertexx.new_color = vertexx.color;
 				}
-                // vertices.push(Vertex {
-                //     position:  vec3(p[i*3], p[i*3+1], p[i*3+2]),
-                //     normal:    vec3(n[i*3], n[i*3+1], n[i*3+2]),
-                //     tex_coords: vec2(t[i*2], t[i*2+1]),
-                //     ..Vertex::default()
-                // })
 				vertices.push(vertexx);
             }
 

@@ -27,7 +27,9 @@ pub struct Vertex {
 	// bitangent
 	pub bitangent: Vector3<f32>,
 	// color
-	pub color: Vector3<f32>
+	pub color: Vector3<f32>,
+	// new color
+	pub new_color: Vector3<f32>,
 }
 
 impl Default for Vertex {
@@ -39,6 +41,7 @@ impl Default for Vertex {
 			tangent: Vector3::zero(),
 			bitangent: Vector3::zero(),
 			color: Vector3::zero(),
+			new_color: Vector3::zero(),
 		}
 	}
 }
@@ -139,7 +142,7 @@ impl Mesh {
         gl::ActiveTexture(gl::TEXTURE0);
 	}
 	
-	unsafe fn setup_mesh(&mut self) {
+	pub unsafe fn setup_mesh(&mut self) {
 		// create buffers/arrays
         gl::GenVertexArrays(1, &mut self.vao);
         gl::GenBuffers(1, &mut self.vbo);
@@ -180,6 +183,9 @@ impl Mesh {
 		// vertex color
 		gl::EnableVertexAttribArray(5);
         gl::VertexAttribPointer(5, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, color) as *const c_void);
+		// new vertex color
+		gl::EnableVertexAttribArray(6);
+        gl::VertexAttribPointer(6, 3, gl::FLOAT, gl::FALSE, size, offset_of!(Vertex, new_color) as *const c_void);
 
         gl::BindVertexArray(0);
 	}

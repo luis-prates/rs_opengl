@@ -14,21 +14,14 @@ use self::glfw::Context;
 
 extern crate gl;
 
-use std::ffi::{CStr, CString };
+use std::ffi::CStr;
 
-use common::{process_events, process_input};
+use common::process_events;
 use shader::Shader;
 use camera::Camera;
 use model::Model;
 
 extern crate image;
-
-enum CameraMovement {
-    FORWARD,
-    BACKWARD,
-    LEFT,
-    RIGHT,
-}
 
 // settings
 const SCR_WIDTH: u32 = 800;

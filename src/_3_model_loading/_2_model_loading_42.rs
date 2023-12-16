@@ -144,9 +144,10 @@ pub fn main_3_2() {
 			gl::ClearColor(0.1, 0.1, 0.1, 1.0);
 			gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 			
-			let use_texturing = CString::new("useTexturing").unwrap();
-			let use_mix = CString::new("mixValue").unwrap();
-			let use_new_mix = CString::new("newMix").unwrap();
+			let use_texturing = c_str!("useTexturin");
+			let use_mix = c_str!("mixValue");
+			let use_new_mix = c_str!("newMix");
+
 			process_local_input(
 				&mut window,
 				&mut position,
@@ -160,18 +161,14 @@ pub fn main_3_2() {
 			if use_color == 1 {
 				mix_value += 0.005;
 				new_mix += 0.005;
-				if mix_value >= 1.0 {
-					mix_value = 1.0;
-				}
-				if new_mix >= 1.0 {
-					new_mix = 1.0;
-				}
+				mix_value = mix_value.clamp(0.0, 1.0);
+				new_mix = new_mix.clamp(0.0, 1.0);
+
 			}
 			else {
 				mix_value -= 0.005;
-				if mix_value <= 0.0 {
-					mix_value = 0.0;
-				}
+				mix_value = mix_value.clamp(0.0, 1.0);
+				
 			}
 
 			
@@ -186,8 +183,8 @@ pub fn main_3_2() {
 			let view = camera.get_view_matrix();
 
 			// get matrix's uniform location and set matrix
-			our_shader.set_mat4(CStr::from_bytes_with_nul(b"view\0").unwrap(), &view);
-			our_shader.set_mat4(CStr::from_bytes_with_nul(b"projection\0").unwrap(), &projection);
+			our_shader.set_mat4(c_str!("view"), &view);
+			our_shader.set_mat4(c_str!("projection"), &projection);
 
 			// render the loaded model
 			let (center_x, center_y, center_z) = our_model.get_center_all_axes();
@@ -197,7 +194,7 @@ pub fn main_3_2() {
 			model = model * Matrix4::from_axis_angle(vec3(0.0, 1.0, 0.0).normalize(), Deg(angle));
 			model = model * Matrix4::<f32>::from_translation(vec3(-center_x, -center_y, -center_z));
 
-			our_shader.set_mat4(CStr::from_bytes_with_nul(b"model\0").unwrap(), &model);
+			our_shader.set_mat4(c_str!("model"), &model);
 			our_model.draw(&our_shader);
 
 			gl::Uniform1i(gl::GetUniformLocation(our_shader.id, use_texturing.as_ptr()), 1);
@@ -208,7 +205,7 @@ pub fn main_3_2() {
 			model = model * Matrix4::<f32>::from_translation(vec3(5.0, 1.75, 0.0));
 			model = model * Matrix4::from_axis_angle(vec3(1.0, 0.0, 0.0), Deg(angle));
 			model = model * Matrix4::from_translation(vec3(-center_x, -center_y, -center_z));
-			our_shader.set_mat4(CStr::from_bytes_with_nul(b"model\0").unwrap(), &model);
+			our_shader.set_mat4(c_str!("model"), &model);
 			our_model2.draw(&our_shader);
 
         }

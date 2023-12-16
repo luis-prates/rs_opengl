@@ -1,6 +1,7 @@
 extern crate glfw;
 
-use cgmath::{Matrix4, vec3, Deg, perspective, Point3, InnerSpace};
+use cgmath::{Matrix4, vec3, Vector3, Deg, perspective, Point3, InnerSpace};
+use glfw::Glfw;
 use glfw::{Key, Action};
 use rand::Rng;
 
@@ -95,7 +96,7 @@ pub fn main_3_2() {
 
 		// load models
 		let our_model = Model::new("resources/textures/42.obj");
-		let our_model2: Model = Model::new("resources/objects/planet/planet_offset_down_more.obj");
+		let our_model2: Model = Model::new("resources/objects/planet/planet.obj");
 		// let our_model: Model = Model::new("resources/objects/nanosuit/nanosuit.obj");
 
 		// draw in wireframe
@@ -113,12 +114,9 @@ pub fn main_3_2() {
 	// 	our_shader.set_int(CStr::from_bytes_with_nul(b"texture2\0").unwrap(), 1);
 	// }
 
-	let mut position_x = 0.0;
-	let mut position_y = 0.0;
-	let mut position_z = 0.0;
+	let mut position = vec3(0.0, 0.0, 0.0);
 	let mut use_color = 0;
 	let mut mix_value = 0.0;
-	let delay_time = 1.0;
 	let mut last_time: f32 = 0.0;
 	let mut new_mix = 0.0;
 
@@ -140,42 +138,7 @@ pub fn main_3_2() {
 		);
 
 		// process_input(&mut window, delta_time, &mut camera);
-		let velocity = 2.5 * delta_time;
-		if window.get_key(Key::Escape) == Action::Press {
-			window.set_should_close(true)
-		}
-		if window.get_key(Key::W) == Action::Press {
-			position_y += 1.0 * velocity; 
-		}
-		if window.get_key(Key::S) == Action::Press {
-			position_y -= 1.0 * velocity; 
-		}
-		if window.get_key(Key::A) == Action::Press {
-			position_x -= 1.0 * velocity; 
-		}
-		if window.get_key(Key::D) == Action::Press {
-			position_x += 1.0 * velocity;
-		}
-		if window.get_key(Key::Q) == Action::Press {
-			position_z -= 1.0 * velocity; 
-		}
-		if window.get_key(Key::E) == Action::Press {
-			position_z += 1.0 * velocity;
-		}
-		if window.get_key(Key::Down) == Action::Press {
-			mix_value -= 0.01;
-			if mix_value <= 0.0 {
-				mix_value = 0.0;
-			}
-			println!("mix value: {}", mix_value);
-		}
-		if window.get_key(Key::Up) == Action::Press {
-			mix_value += 0.01;
-			if mix_value >= 1.0 {
-				mix_value = 1.0;
-			}
-			println!("mix value: {}", mix_value);
-		}
+		
 		
 		unsafe {
 			gl::ClearColor(0.1, 0.1, 0.1, 1.0);
@@ -184,11 +147,16 @@ pub fn main_3_2() {
 			let use_texturing = CString::new("useTexturing").unwrap();
 			let use_mix = CString::new("mixValue").unwrap();
 			let use_new_mix = CString::new("newMix").unwrap();
-			if window.get_key(Key::Enter) == Action::Press && glfw.get_time() as f32 - last_time > delay_time {
-				use_color ^= 1;
-				println!("use color value: {}", use_color);
-				last_time = glfw.get_time() as f32;
-			}
+			process_local_input(
+				&mut window,
+				&mut position,
+				delta_time,
+				glfw,
+				&mut last_time,
+				&mut our_model,
+				(&mut new_mix, &mut mix_value, &mut use_color)
+			);
+			
 			if use_color == 1 {
 				mix_value += 0.005;
 				new_mix += 0.005;
@@ -206,11 +174,7 @@ pub fn main_3_2() {
 				}
 			}
 
-			if window.get_key(Key::K) == Action::Press && glfw.get_time() as f32 - last_time > delay_time {
-				new_mix = 0.0;
-				our_model.change_color(&vec3(rand::thread_rng().gen_range(0.0, 1.1), rand::thread_rng().gen_range(0.0, 1.1), rand::thread_rng().gen_range(0.0, 1.1)));
-				last_time = glfw.get_time() as f32;
-			}
+			
 			gl::Uniform1i(gl::GetUniformLocation(our_shader.id, use_texturing.as_ptr()), use_color);
 			gl::Uniform1f(gl::GetUniformLocation(our_shader.id, use_mix.as_ptr()), mix_value);
 			gl::Uniform1f(gl::GetUniformLocation(our_shader.id, use_new_mix.as_ptr()), new_mix);
@@ -229,7 +193,7 @@ pub fn main_3_2() {
 			let (center_x, center_y, center_z) = our_model.get_center_all_axes();
 			let angle = glfw.get_time() as f32 * 50.0;
 			let mut model = Matrix4::from_scale(0.2);
-			model = model * Matrix4::<f32>::from_translation(vec3(position_x, position_y, position_z));
+			model = model * Matrix4::<f32>::from_translation(vec3(position.x, position.y, position.z));
 			model = model * Matrix4::from_axis_angle(vec3(0.0, 1.0, 0.0).normalize(), Deg(angle));
 			model = model * Matrix4::<f32>::from_translation(vec3(-center_x, -center_y, -center_z));
 
@@ -254,4 +218,70 @@ pub fn main_3_2() {
         window.swap_buffers();
         glfw.poll_events();
     }
+}
+
+fn process_local_input(
+	window: &mut glfw::Window,
+	position: &mut Vector3<f32>,
+	delta_time: f32,
+	glfw: Glfw,
+	last_time: &mut f32,
+	our_model: &mut Model,
+	(new_mix, mix_value, use_color): (&mut f32, &mut f32, &mut i32)
+) {
+	let delay_time = 1.0;
+	let velocity = 2.5 * delta_time;
+	let current_time = glfw.get_time() as f32;
+	if window.get_key(Key::Escape) == Action::Press {
+		window.set_should_close(true)
+	}
+	macro_rules! handle_key {
+		($key:ident, $action:ident, $axis:ident, $polarity:expr) => {
+			if window.get_key(Key::$key) == Action::$action {
+				position.$axis += $polarity * velocity;
+			}
+		};
+	}
+	
+	handle_key!(W, Press, y, 1.0);
+	handle_key!(S, Press, y, -1.0);
+	handle_key!(A, Press, x, -1.0);
+	handle_key!(D, Press, x, 1.0);
+	handle_key!(Q, Press, z, -1.0);
+	handle_key!(E, Press, z, 1.0);
+	
+	macro_rules! adjust_mix_value {
+		($key:ident, $sign:expr) => {
+			if window.get_key(Key::$key) == Action::Press {
+				*mix_value += 0.01 * $sign;
+				*mix_value = mix_value.clamp(0.0, 1.0);
+				println!("mix value: {}", mix_value);
+			}
+		};
+	}
+	
+	adjust_mix_value!(Down, -1.0);
+	adjust_mix_value!(Up, 1.0);
+	
+	macro_rules! handle_event {
+		($key:ident, $action:ident, $value:expr) => {
+			if window.get_key(Key::$key) == Action::$action && current_time - *last_time > delay_time {
+				*$value ^= 1;
+				*last_time = current_time;
+			}
+		};
+	}
+	
+	handle_event!(Enter, Press, use_color);
+	// handle_event!(K, Press, new_mix, "new mix");
+	
+	if window.get_key(Key::K) == Action::Press && current_time - *last_time > delay_time {
+		*new_mix = 0.0;
+		our_model.change_color(&vec3(
+			rand::thread_rng().gen_range(0.0, 1.1),
+			rand::thread_rng().gen_range(0.0, 1.1),
+			rand::thread_rng().gen_range(0.0, 1.1),
+		));
+		*last_time = current_time;
+	}
 }

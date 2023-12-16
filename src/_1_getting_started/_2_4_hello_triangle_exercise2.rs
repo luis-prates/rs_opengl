@@ -193,8 +193,10 @@ pub fn main_1_2_4() {
     }
 
 	unsafe {
-		gl::DeleteVertexArrays(2, vaos.as_mut_ptr());
+		gl::DeleteProgram(shader_program);
 		gl::DeleteBuffers(2, vbos.as_mut_ptr());
+		gl::DeleteVertexArrays(2, vaos.as_mut_ptr());
+		//glfw.
 	}
 }
 

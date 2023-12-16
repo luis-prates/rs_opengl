@@ -13,7 +13,7 @@
 		  }
 		},
 		"args": [
-		  "3_1"
+		  "1_2_4"
 		],
 		"cwd": "${workspaceFolder}"
 	  },
